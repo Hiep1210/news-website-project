@@ -14,8 +14,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -78,19 +81,30 @@ public class UserSignup extends HttpServlet {
             throws ServletException, IOException {
         userDAO dao = new userDAO();
         try {
-            if (dao.CheckDuplicate(request.getParameter("username"))) { //check duplicate username
-                throw new Exception();
+            if(dao.CheckDuplicate(request.getParameter("username"))){
+                throw new NumberFormatException();
             }
-            DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-            Date startDate;
-            startDate = df.parse(request.getParameter("dob"));
-            dao.InsertUser(new User(0, request.getParameter("pass"), request.getParameter("name"), 
-                    request.getParameter("username"), request.getParameter("gender"), 
-                    Boolean.parseBoolean(request.getParameter("isAdmin")), startDate));
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            Date dob;
+            dob = df.parse("2003-12-10");
+//            User add = new User(0, "nghia123", "nghia", "nghia123", "Male", false, dob);
+            User add = new User(0, request.getParameter("pass"), request.getParameter("name"), request.getParameter("username"), request.getParameter("gender"), false, dob);
+            if(!dao.InsertUser(add)){
+                throw new NullPointerException();
+            }
+            request.getSession().setAttribute("user", add);
            response.sendRedirect("MainPage");
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             request.setAttribute("error", "Existed username !");
-            request.setAttribute("return_page", "Signup.jsp");
+            request.setAttribute("return_page", "login.jsp");
+            request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
+        } catch (ParseException ex) {
+            request.setAttribute("error", "cant add user !");
+            request.setAttribute("return_page", "login.jsp");
+            request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
+        } catch (NullPointerException ex){
+            request.setAttribute("error", "cant add user due to failed procedure !");
+            request.setAttribute("return_page", "login.jsp");
             request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
         }
     }

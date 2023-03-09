@@ -1,6 +1,7 @@
 <%@page import="model.User"%>
 <%@page import="model.Category"%>
 <%@page import="java.util.ArrayList"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,12 +43,12 @@
                     <ul class="navbar-nav">
                         <%
                             ArrayList<Category> cat_name = (ArrayList< Category>) session.getAttribute("cat_list");
-                            for (int idx = 0; idx < cat_name.size(); idx++) {
                         %>
-                        <div class="nav-item">
-                            <a class="nav-link hover-animation-underline" href="getNewsSameCategory?cat_id=<%= cat_name.get(idx).getId() %>&name=<%= cat_name.get(idx).getName()%>&des=<%= cat_name.get(idx).getDes()%>"><%= cat_name.get(idx).getName()%></a>
-                        </div>
-                        <%}%>
+                        <c:forEach items="<%= cat_name %>" var = "cat_name" >
+                            <div class="nav-item">
+                                <a class="nav-link hover-animation-underline" href="getNewsSameCategory?cat_id=<c:out value="${cat_name.getId()}"/>"  ><c:out value="${cat_name.getName()}"/></a>
+                            </div>
+                        </c:forEach>
                     </ul>
                 </div>
                 <!-- NAVBAR LOGIN -->
@@ -69,13 +70,13 @@
                         <img class="rounded-circle" src="image/user/alan wong.webp" alt="">
                     </div>
                     <div class="user-info-main-text">
-                        <h1>Alan Wong</h1>
+                        <h1><c:out value="${sessionScope.user.getUname()}"/></h1>
                         <h4>alan.wong@vice.com</h4>
                     </div>
                 </div>
                 <div class="col-md-6 container-fluid user-info-detail">
                     <div class="user-info-detail-body">
-                        <a href="editUserInfo.html">
+                        <a href="editUserInfo.jsp">
                             <i style="color: black;" class="material-icons">settings</i>
                             <span>Edit</span>
                         </a>
@@ -98,39 +99,16 @@
         <!-- SAVED NEWS -->
         <div class="container-fluid">
             <div class="row nopadding">
+                <c:forEach var="saved_news" items="${requestScope.saved_news}">
                 <div class="card col-md-4 nopadding">
-                    <img src="image/news/airline.webp" class="card-img-top" alt="...">
+                    <img src="<c:out value="${sessionScope.location}"/><c:out value="${saved_news.getImage()}"/>.webp" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <h3 class="card-title">Thousands Uncontactable As New Zealand Grapples with Its Worst Natural
-                            Disaster ?This Century?</h3>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        <h6 class="card-text">Sample author</h6>
-                        <h6 class="card-text">Sample time</h6>
+                        <h3 class="card-title"><c:out value="${saved_news.getTitle()}"/></h3>
+                        <p class="card-text"><c:out value="${saved_news.getSubtitle()}"/></p>
+                        <h6 class="card-text"><c:out value="${saved_news.getUser_id()}"/></h6>
                     </div>
                 </div>
-                <div class="card col-md-4 nopadding">
-                    <img src="image/news/airline.webp" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h3 class="card-title">Thousands Uncontactable As New Zealand Grapples with Its Worst Natural
-                            Disaster ?This Century?</h3>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        <h6 class="card-text">Sample author</h6>
-                        <h6 class="card-text">Sample time</h6>
-                    </div>
-                </div>
-                <div class="card col-md-4 nopadding">
-                    <img src="image/news/airline.webp" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h3 class="card-title">Thousands Uncontactable As New Zealand Grapples with Its Worst Natural
-                            Disaster ?This Century?</h3>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        <h6 class="card-text">Sample author</h6>
-                        <h6 class="card-text">Sample time</h6>
-                    </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
 
@@ -147,66 +125,43 @@
                 <h4>Older</h4>
             </div>
         </div>
-
+        <c:if test="${sessionScope.user.isIsAdmin()}">
         <!-- <AUTHOR NAME>'s NEWS TITLE -->
         <div class="latest-title user-info-titles nopadding">
-            <h1>Lampung's</h1>
+            <h1>Your</h1>
             <h1>NEWS</h1>
         </div>
 
         <!-- <AUTHOR NAME>'s NEWS -->
-        <div class="container-fluid">
-            <div class="row nopadding">
-                <div class="card col-md-4 nopadding">
-                    <img src="image/news/airline.webp" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h3 class="card-title">Thousands Uncontactable As New Zealand Grapples with Its Worst Natural
-                            Disaster ?This Century?</h3>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        <h6 class="card-text">Sample author</h6>
-                        <h6 class="card-text">Sample time</h6>
+            <div class="container-fluid">
+                <div class="row nopadding">
+                    <c:forEach var="posted" items="${requestScope.posted_news}}" >
+                    <div class="card col-md-4 nopadding">
+                        <img src="<c:out value="${sessionScope.location}"/><c:out value="${posted.getImage()}"/>.webp" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h3 class="card-title"><c:out value="${posted.getTitle()}"/></h3>
+                            <p class="card-text"><c:out value="${posted.getSubtitle()}"/></p>
+                            <h6 class="card-text"><c:out value="${posted.getUser_id()}"/></h6>
+                        </div>
                     </div>
-                </div>
-                <div class="card col-md-4 nopadding">
-                    <img src="image/news/airline.webp" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h3 class="card-title">Thousands Uncontactable As New Zealand Grapples with Its Worst Natural
-                            Disaster ?This Century?</h3>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        <h6 class="card-text">Sample author</h6>
-                        <h6 class="card-text">Sample time</h6>
-                    </div>
-                </div>
-                <div class="card col-md-4 nopadding">
-                    <img src="image/news/airline.webp" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h3 class="card-title">Thousands Uncontactable As New Zealand Grapples with Its Worst Natural
-                            Disaster ?This Century?</h3>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        <h6 class="card-text">Sample author</h6>
-                        <h6 class="card-text">Sample time</h6>
-                    </div>
+                    </c:forEach>
                 </div>
             </div>
-        </div>
 
-        <!-- PAGING NAVIGATOR -->
-        <div class="paging-nav">
-            <div class="paging-prev">
-                <h4>Newer</h4>
+            <!-- PAGING NAVIGATOR -->
+            <div class="paging-nav">
+                <div class="paging-prev">
+                    <h4>Newer</h4>
+                </div>
+                <div class="paging-progress">
+                    <h4>1</h4>
+                    <h4>5</h4>
+                </div>
+                <div class="paging-next">
+                    <h4>Older</h4>
+                </div>
             </div>
-            <div class="paging-progress">
-                <h4>1</h4>
-                <h4>5</h4>
-            </div>
-            <div class="paging-next">
-                <h4>Older</h4>
-            </div>
-        </div>
-
+        </c:if>
         <!-- FOOTER -->
         <div class="footer">
             <img class="rotate" style="width: 100px;" src="image/branding/VMG-logo-updated.png" alt="">

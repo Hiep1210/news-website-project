@@ -40,7 +40,7 @@
                             for (int idx = 0; idx < cat_name.size(); idx++) {
                         %>
                         <div class="nav-item">
-                            <a class="nav-link hover-animation-underline" href="getNewsSameCategory?cat_id=<%= cat_name.get(idx).getId() %>&name=<%= cat_name.get(idx).getName()%>&des=<%= cat_name.get(idx).getDes()%>"><%= cat_name.get(idx).getName()%></a>
+                            <a class="nav-link hover-animation-underline" href="getNewsSameCategory?cat_id=<%= cat_name.get(idx).getId() %>"><%= cat_name.get(idx).getName()%></a>
                         </div>
                         <%}%>
                     </ul>
@@ -58,9 +58,11 @@
                 <!-- NAVBAR PROFILE -->
                 <div class="col-md-2 navbar-login navbar-collapse" id="navbarNavDropdown">
                     <% String user = "user";
+                         int ID = 0;
                          if (session.getAttribute("user") != null) {  
                         User user1 = (User)session.getAttribute("user");
                         user = user1.getName();
+                        ID = user1.getId();
                         }%>
                     <p class="nopadding">Hello, <%= user %></p>
                     <ul class="navbar-nav">
@@ -76,7 +78,7 @@
                                 <li><a class="dropdown-item" href="login.jsp">Sign up</a></li>
                                     <%} else{ %>
                                 <li><a class="dropdown-item" href="UserLogout">Log out</a></li>
-                                <li><a class="dropdown-item" href="userInfo.jsp">Profile</a></li>
+                                <li><a class="dropdown-item" href="Profile?id=<%= ID %>">Profile</a></li>
                                     <%}%>
                             </ul>
                         </li>
@@ -99,7 +101,7 @@
                             ArrayList<String> user_nameList = (ArrayList<String>) request.getAttribute("user_namelist");
                         %>
                         <div class="col-md-8 featured-card-image nopadding">
-                            <img class="card-img" src="<%= request.getAttribute("location") %><%= news_list.get(0).getImage() %>.jpg" alt="...">
+                            <img class="card-img" src="<%= session.getAttribute("location") %><%= news_list.get(0).getImage() %>.webp" alt="...">
                         </div>
                         <div class="col-md-4 featured-card-content align-self-center nopadding">
                             <div class="card-body">
@@ -117,15 +119,15 @@
                         for (int idx = 0; idx < 4; idx++) { //display 4 top
                     %>
                     <div class="card">
-                        <img src="<%= request.getAttribute("location") %><%= news_list.get(idx).getImage() %>.webp" class="card-img-top" alt="...">
+                        <img src="<%= session.getAttribute("location") %><%= news_list.get(idx).getImage() %>.webp" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h3 class="card-title"><%= news_list.get(idx).getTitle()%></h3>
                             <p class="card-text"><%= news_list.get(idx).getSubtitle()%></p>
                             <h6 class="card-text"><%= user_nameList.get(idx)%></h6>
                         </div>
                     </div>
+                        <a style="position: absolute; width: 100%; height: 100%;" href="newsInfo.jsp"></a>
                     <%}%>
-                    <a style="position: absolute; width: 100%; height: 100%;" href="newsInfo.jsp"></a>
                 </div>
             </div>
         </div>
@@ -146,7 +148,7 @@
                     <div class="col-md-8 latest-news-body nopadding">
                         <div class="row nopadding">
                             <div class="col-md-6 card-image nopadding">
-                                <img class="card-img" src="<%= request.getAttribute("location") %><%= news_list.get(idx).getImage() %>.webp" alt="...">
+                                <img class="card-img" src="<%= session.getAttribute("location") %><%= news_list.get(idx).getImage() %>.webp" alt="...">
                             </div>
                             <div class="col-md-6 card-content align-self-center nopadding">
                                 <div class="card-body">

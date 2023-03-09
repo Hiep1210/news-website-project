@@ -79,7 +79,7 @@ public class MainPage extends HttpServlet {
         request.setAttribute("cat_namelist", cat_namelist);
         request.setAttribute("user_namelist", user_namelist);
         request.setAttribute("news_list", newsList);
-        request.setAttribute("location", "image/news/");
+        request.getSession().setAttribute("location", "image/news/");
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
     /**

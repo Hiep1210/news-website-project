@@ -4,11 +4,10 @@
  */
 
 package servlet;
-import model.News;
-import model.Category;
+
 import dao.NewsDAO;
-import dao.catDAO;
-import java.util.ArrayList;
+import dao.SaveDAO;
+import dao.userDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,13 +15,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import model.News;
 
 /**
  *
  * @author Inspiron
  */
-@WebServlet(name="getNewsSameCategory", urlPatterns={"/getNewsSameCategory"})
-public class getNewsSameCategory extends HttpServlet {
+@WebServlet(name="Profile", urlPatterns={"/Profile"})
+public class Profile extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +40,10 @@ public class getNewsSameCategory extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet getNewsSameCategory</title>");  
+            out.println("<title>Servlet Profile</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet getNewsSameCategory at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet Profile at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,20 +60,16 @@ public class getNewsSameCategory extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        try {
-            NewsDAO dao = new NewsDAO();
-            catDAO catdao = new catDAO();
-            int id = Integer.parseInt(request.getParameter("cat_id"));
-            ArrayList<News> newses = dao.searchCategory(id);
-            request.setAttribute("name", catdao.getCategory(id).getName());
-            request.setAttribute("des", catdao.getCategory(id).getDes());
-            request.setAttribute("newses", newses);
-            request.getRequestDispatcher("Category.jsp").forward(request, response);
-        } catch (Exception e) {
-            request.setAttribute("error", "!");
-            request.setAttribute("return_page", "index.jsp");
-            request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
-        }
+        NewsDAO newsdao = new NewsDAO();
+        userDAO user = new userDAO();
+        SaveDAO save = new SaveDAO();
+        ArrayList<News> list = new ArrayList<>();
+        int id = Integer.parseInt(request.getParameter("id"));
+        ArrayList<News> saved = save.getSaveNews(id);
+        list = user.GetAllAdminNews(user.getUser(id));//get posted news
+        request.setAttribute("saved_news", saved);
+        request.setAttribute("posted_news", list);
+        request.getRequestDispatcher("userInfo.jsp").forward(request, response);
     } 
 
     /** 

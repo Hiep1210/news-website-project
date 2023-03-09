@@ -42,7 +42,7 @@
                             for (int idx = 0; idx < cat_name.size(); idx++) {
                         %>
                         <div class="nav-item">
-                            <a class="nav-link hover-animation-underline" href="getNewsSameCategory?cat_id = <%= cat_name.get(idx).getId() %>"><%= cat_name.get(idx).getName()%></a>
+                            <a class="nav-link hover-animation-underline" href="getNewsSameCategory?cat_id=<%= cat_name.get(idx).getId() %>"><%= cat_name.get(idx).getName()%></a>
                         </div>
                         <%}%>
                 </ul>
@@ -61,10 +61,10 @@
 
     <!-- HEADING -->
     <div class="text-center">
-        <h1><%= request.getParameter("name") %></h1>
+        <h1><%= request.getAttribute("name") %></h1>
     </div>
     <div class="text-center" style="font-weight: normal">
-        <h2><%= request.getParameter("des") %></h2>
+        <h2><%= request.getAttribute("des") %></h2>
     </div>
     <%
         ArrayList<News> newses = (ArrayList < News >)request.getAttribute("newses");
@@ -79,7 +79,7 @@
                 <div class="card-body">
                     <h3 class="card-title"><%= newses.get(idx).getTitle() %></h3>
                     <p class="card-text"><%= newses.get(idx).getSubtitle() %></p>
-                    <h6 class="card-text">Sample author</h6>
+                    <h6 class="card-text"><%= newses.get(idx).getUser_id() %></h6>
                 </div>
             </div>
             <%}%>

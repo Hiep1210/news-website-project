@@ -17,14 +17,13 @@ import java.util.logging.Logger;
 import model.User;
 import model.News;
 
-
 /**
  *
  * @author Inspiron
  */
 public class userDAO {
 
-    public void InsertUser(User user) {
+    public boolean InsertUser(User user) {
         try {
             DBContext db = new DBContext();
             Connection con = db.getConnection();
@@ -32,26 +31,24 @@ public class userDAO {
                 String sql = "{call insertUser(?,?,?,?,?,?,?)}";
                 CallableStatement call = con.prepareCall(sql);
                 call.setString(2, user.getPass());
-                call.setString(3, user.getName());
+                call.setNString(3, user.getName());
                 call.setString(4, user.getUname());
-                if (user.isIsAdmin()) {
-                    call.setInt(5, 1);
-                } else {
-                    call.setInt(5, 0);
-                }
+                call.setInt(5, 0);
                 call.setString(6, user.getGender());
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
                 String strDate = df.format(user.getDob());
-                call.setString(6, strDate);
+                call.setString(7, strDate);
                 call.registerOutParameter(1, java.sql.Types.INTEGER);
                 call.executeUpdate();
-                System.out.println(call.getInt(1));
+                if(call.getInt(1)==0) throw new Exception();
                 call.close();
                 con.close();
+                return true;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return false;
     }
 
     public User Login(String username, String pass) {
@@ -60,7 +57,7 @@ public class userDAO {
             DBContext db = new DBContext();
             Connection con = db.getConnection();
             if (con != null) {
-                String sql = "Select * from UserS where Username = " + "'"+username+"'"+"AND PASSWORD = "+"'"+pass+"'";
+                String sql = "Select * from UserS where Username = " + "'" + username + "'" + "AND PASSWORD = " + "'" + pass + "'";
                 Statement call = con.createStatement();
                 ResultSet rs = call.executeQuery(sql);
                 while (rs.next()) {             //needed even if just 1 row       
@@ -84,10 +81,12 @@ public class userDAO {
             DBContext db = new DBContext();
             Connection con = db.getConnection();
             if (con != null) {
-                String sql = "{call checkDuplicate(?)}";
+                String sql = "{call checkDuplicate(?,?)}";
                 CallableStatement call = con.prepareCall(sql);
                 call.setNString(1, username);
-                if (call.executeUpdate() > 0) {
+                call.registerOutParameter(2, java.sql.Types.INTEGER);
+                call.executeUpdate();
+                if (call.getInt(2) > 0) {
                     throw new Exception();
                 }
                 call.close();
@@ -200,24 +199,20 @@ public class userDAO {
         }
         return false;
     }
+
     public ArrayList<News> GetAllAdminNews(User admin) {
         ArrayList<News> list = new ArrayList<>();
         try {
             DBContext db = new DBContext();
             Connection con = db.getConnection();
             if (con != null) {
-                String sql = "SELECT * INTO Admintab FROM dbo.UserS WHERE id_Admin = 1\n"
-                        + "SELECT * FROM dbo.Admintab a, dbo.News n\n"
-                        + "WHERE a.User_id = n.User_id AND a.User_id =" +admin.getId();
+                String sql = "SELECT * FROM dbo.News n\n"
+                        + "WHERE n.User_id =" + admin.getId();
                 Statement call = con.createStatement();
                 ResultSet rs = call.executeQuery(sql);
                 while (rs.next()) {             //needed even if just 1 row       
-                    boolean isAdmin = false;
-                    if (rs.getInt("id_Admin") == 1) {
-                        isAdmin = true;
-                    }
-                    User new_user = new User(rs.getInt("User_id"), rs.getString("PASSWORD"), rs.getNString("User_name"), rs.getString("Username"), rs.getNString("Gender"), isAdmin, rs.getDate("dob"));
-                    list.add(new_user);
+                    News news = new News(rs.getInt("News_id"), admin.getId(), rs.getInt("Cat_id"), rs.getNString("News_title"), rs.getNString("News_subtitle"), rs.getNString("News_content"), rs.getNString("News_image"));
+                    list.add(news);
                 }
                 call.close();
                 con.close();
@@ -230,26 +225,32 @@ public class userDAO {
 
     public static void main(String[] args) {
         userDAO user = new userDAO();
-      // user.InsertUser(new User(1, pass, name, uname, gender, true, dob));
+        System.out.println("dup:" + user.CheckDuplicate("hung"));
+        // user.InsertUser(new User(1, pass, name, uname, gender, true, dob));
 //        User user1 = user.getUser(2);
 //        System.out.println(user1.getName());
         User player = user.Login("hiep", "123");
-        if(player.equals("")) System.out.println("null 2");
-        if(player.getUname() == null) System.out.println("null 3");
+        if (player.equals("")) {
+            System.out.println("null 2");
+        }
+        if (player.getUname() == null) {
+            System.out.println("null 3");
+        }
         System.out.println(player);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date dob;
         try {
             dob = df.parse("2003-12-10");
             User user2 = new User(2, "Lam123", "Lam Phung", "Lam", "Male", false, dob);
-             System.out.println(user.updateUser(user2));
+            System.out.println(user.updateUser(user2));
+            User add = new User(0, "nghia123", "nghia", "nghia123", "Male", false, dob);
+            System.out.println(user.InsertUser(add));
         } catch (ParseException ex) {
             Logger.getLogger(userDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
         ArrayList<User> list = user.getAllUser();
         for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getName() + list.get(i).getPass()+ list.get(i).getDob());
+            System.out.println(list.get(i).getName() + list.get(i).getPass() + list.get(i).getDob());
         }
 //        System.out.println(user.delUser(3));
     }

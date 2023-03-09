@@ -47,7 +47,7 @@ BEGIN
 	DELETE FROM dbo.UserS WHERE User_id = @ID
 END
 EXEC delUser @ID =3
-*/
+
 CREATE PROC updateUser
 @ID INT,
 @pass VARCHAR(20),
@@ -67,25 +67,25 @@ EXEC dbo.updateUser @ID = 2,            -- int
                     @user = 'lam',         -- varchar(60)
                     @gender = N'Male',      -- nvarchar(10)
                     @dob = '16/3/2003' -- date
-
-					
 CREATE PROC checkDuplicate
-@user NVARCHAR(60)
+@user NVARCHAR(60),
+@out int output
 AS
 BEGIN
-SELECT * FROM dbo.UserS WHERE Username =@user
+Set @out = (SELECT Count(*) FROM dbo.UserS WHERE Username =@user)
 END
 CREATE PROC FindUser
 @user NVARCHAR(60),
 @pass VARCHAR(50)
 AS
 BEGIN
-SELECT * FROM dbo.UserS WHERE Username = @user AND PASSWORD = @pass 
+SELECT * FROM dbo.UserS WHERE Username = @user
 END
 EXEC FindUser @user = 'hung', @pass = '123'
 SELECT * INTO Admintab FROM dbo.UserS WHERE id_Admin = 1
 SELECT * FROM dbo.Admintab a, dbo.News n
 WHERE a.User_id = n.User_id AND a.User_id = 1
+*/
 ------------category-------
 CREATE PROC insertCate
 @name NVARCHAR(50),

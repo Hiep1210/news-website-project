@@ -50,7 +50,7 @@
                         <input type="date" name="dob" placeholder="dd/mm/yyy">
                         <div class="signup-gender">
                             <label for="gender">Gender</label>
-                            Male<input type="radio" name="gender" value="Male" id="gender-male">
+                            Male<input type="radio" name="gender" value="Male" id="gender-male" checked>
                             Female<input type="radio" name="gender" value="Female" id="gender-female">
                         </div>
                         <input type="password" name="pass" placeholder="Password">
