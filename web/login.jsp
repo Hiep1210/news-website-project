@@ -31,7 +31,7 @@
                 <input type="checkbox" id="check">
                 <div class="login form">
                     <header>Login</header>
-                    <form action="UserLogIn">
+                    <form action="UserLogIn" method="post">
                         <input type="text" name="username" placeholder="Enter your username">
                         <input type="password" name="pass" placeholder="Enter your password">
                         <input type="submit" class="button" value="Login">
@@ -44,7 +44,7 @@
                 </div>
                 <div class="registration form">
                     <header>Signup</header>
-                    <form action="UserSignup">
+                    <form action="UserSignup" method="post">
                         <input type="text" name="username" placeholder="Username">
                         <input type="text" name="name" placeholder="Real name">
                         <input type="date" name="dob" placeholder="dd/mm/yyy">

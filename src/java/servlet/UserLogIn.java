@@ -72,13 +72,15 @@ public class UserLogIn extends HttpServlet {
     throws ServletException, IOException {
         userDAO dao = new userDAO();
         try {
-            if(dao.CheckLogIn(request.getParameter("username"), request.getParameter("pass"))) throw new Exception();
             //chuyen islogin thanh true trong suot 1 session, khi nao logout thi remove attribute
+            User user = dao.Login(request.getParameter("username"), request.getParameter("pass"));
+            if(user.getUname() == null) throw new Exception();
             request.getSession().setAttribute("isLogin", true);
-            request.getSession().setAttribute("user", dao.getUser(Integer.parseInt(request.getParameter(string))));
+            request.getSession().setAttribute("user", user);
+            response.sendRedirect("MainPage");
         } catch (Exception e) {
             request.setAttribute("error", "Username or password is incorrect !");
-            request.setAttribute("return_page", "Login.jsp");
+            request.setAttribute("return_page", "login.jsp");
             request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
         }
     }

@@ -54,13 +54,13 @@ public class userDAO {
         }
     }
 
-    public User Login(String username) {
+    public User Login(String username, String pass) {
         User new_user = new User();
         try {
             DBContext db = new DBContext();
             Connection con = db.getConnection();
             if (con != null) {
-                String sql = "Select * from UserS where Username = " + "'"+;
+                String sql = "Select * from UserS where Username = " + "'"+username+"'"+"AND PASSWORD = "+"'"+pass+"'";
                 Statement call = con.createStatement();
                 ResultSet rs = call.executeQuery(sql);
                 while (rs.next()) {             //needed even if just 1 row       
@@ -68,7 +68,7 @@ public class userDAO {
                     if (rs.getInt("id_Admin") == 1) {
                         isAdmin = true;
                     }
-                    new_user = new User(id, rs.getString("PASSWORD"), rs.getNString("User_name"), rs.getString("Username"), rs.getNString("Gender"), isAdmin, rs.getDate("dob"));
+                    new_user = new User(rs.getInt("User_id"), rs.getString("PASSWORD"), rs.getNString("User_name"), rs.getString("Username"), rs.getNString("Gender"), isAdmin, rs.getDate("dob"));
                 }
                 call.close();
                 con.close();
@@ -233,6 +233,10 @@ public class userDAO {
       // user.InsertUser(new User(1, pass, name, uname, gender, true, dob));
 //        User user1 = user.getUser(2);
 //        System.out.println(user1.getName());
+        User player = user.Login("hiep", "123");
+        if(player.equals("")) System.out.println("null 2");
+        if(player.getUname() == null) System.out.println("null 3");
+        System.out.println(player);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date dob;
         try {

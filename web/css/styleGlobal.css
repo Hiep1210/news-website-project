@@ -92,15 +92,48 @@ body {
 }
 
 .navbar-login {
-    text-align: end;
-    padding-right: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
 }
 
-.navbar-login i {
+.navbar-login ul {
+    margin-left: 10px;
+}
+
+.navbar-login i, .navbar-search i {
     color: black;
     background-color: white;
     padding: 10px;
     border-radius: 50px;
+}
+
+.navbar-search form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-search form > input {
+    margin: 0px 10px;
+}
+
+.dropdown-toggle::after {
+    content: none;
+}
+
+.dropdown-menu {
+    border-radius: 0px;
+}
+.dropdown-menu li a {
+    color: black;
+}
+
+.dropdown-menu li :hover{
+    background: black;
+    color: white;
 }
 
 /* Hotest news */

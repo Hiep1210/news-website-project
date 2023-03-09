@@ -56,7 +56,16 @@ public class UserLogout extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        userDAO dao = new userDAO();
+        try {
+            request.getSession().setAttribute("isLogin", false);
+            request.getSession().removeAttribute("user");
+            response.sendRedirect("MainPage");
+        } catch (Exception e) {
+            request.setAttribute("error", "Username or password is incorrect !");
+            request.setAttribute("return_page", "Profile.jsp");
+            request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
+        }
     } 
 
     /** 
@@ -69,15 +78,7 @@ public class UserLogout extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        userDAO dao = new userDAO();
-        try {
-            request.getSession().setAttribute("isLogin", false);
-            response.sendRedirect(request.getContextPath()+"/JSP/MainPage.jsp");
-        } catch (Exception e) {
-            request.setAttribute("error", "Username or password is incorrect !");
-            request.setAttribute("return_page", "Profile.jsp");
-            request.getRequestDispatcher("ErrorPage.jsp").forward(request, response);
-        }
+
     }
 
     /** 

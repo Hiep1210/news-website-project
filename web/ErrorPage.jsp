@@ -12,7 +12,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <jsp:include page="<%= (String)request.getAttribute("return_page") %>"/>
-        <b><%= (String)request.getAttribute("error")  %></b>
+        <% String returnPage = (String)request.getAttribute("return_page"); %>
+        <jsp:include page = "<%= returnPage %>"/>
+        <h1 class="text-center" style="font-style: italic; color: red"><%= (String)request.getAttribute("error")  %></h1>
     </body>
 </html>

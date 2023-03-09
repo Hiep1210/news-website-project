@@ -13,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 /**
@@ -73,13 +75,13 @@ public class MainPage extends HttpServlet {
             cat_namelist.add(catdao.getCategory(newsList.get(i).getCat_id()).getName()); // cat related to news
             user_namelist.add(userdao.getUser(newsList.get(i).getUser_id()).getName()); // user tuong ung tung news
         }
-        request.setAttribute("cat_list", cat_list);
+        request.getSession().setAttribute("cat_list", cat_list);
         request.setAttribute("cat_namelist", cat_namelist);
         request.setAttribute("user_namelist", user_namelist);
         request.setAttribute("news_list", newsList);
+        request.setAttribute("location", "image/news/");
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
-
     /**
      * Handles the HTTP <code>POST</code> method.
      *

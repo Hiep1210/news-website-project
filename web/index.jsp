@@ -22,7 +22,7 @@
         <nav class="navbar navbar-expand-lg fixed-top">
             <div class="container-fluid">
                 <!-- NAVBAR -->
-                <div class="navbar-logo col-md-3">
+                <div class="navbar-logo col-md-2">
                     <a class="navbar-brand" href="#">
                         <img style="width: 100px;" src="image/branding/vice logo.png" alt="">
                     </a>
@@ -33,31 +33,60 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <!-- NAVBAR CATEGORY -->
-                <div class="collapse navbar-collapse col-md-6" id="navbarNavDropdown">
+                <div class="collapse navbar-collapse col-md-5" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <%
-                            ArrayList<Category> cat_name = (ArrayList< Category>) request.getAttribute("cat_list");
+                            ArrayList<Category> cat_name = (ArrayList< Category>) session.getAttribute("cat_list");
                             for (int idx = 0; idx < cat_name.size(); idx++) {
                         %>
                         <div class="nav-item">
-                            <a class="nav-link hover-animation-underline" href=""><%= cat_name.get(idx).getName() %></a>
+                            <a class="nav-link hover-animation-underline" href="getNewsSameCategory?cat_id=<%= cat_name.get(idx).getId() %>&name=<%= cat_name.get(idx).getName()%>&des=<%= cat_name.get(idx).getDes()%>"><%= cat_name.get(idx).getName()%></a>
                         </div>
                         <%}%>
                     </ul>
                 </div>
-                <!-- NAVBAR LOGIN -->
-                <div class="navbar-login col-md-3">
-                    <%  %>
-                    <a href="login.jsp" id="navbar-icon-user">
-                        <i class="material-icons hover-animation-grow">person</i>
-                    </a>
+                <!-- NAVBAR SEARCH -->
+                <div class="col-md-3 navbar-search">
+                    <form action="">
+                        <input style="width: 100%;" type="text" placeholder="Search anything">
+                        <button style="border: 0px;" type="submit" class="rounded-circle nopadding">
+                            <i class="material-icons hover-animation-grow">search</i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- NAVBAR PROFILE -->
+                <div class="col-md-2 navbar-login navbar-collapse" id="navbarNavDropdown">
+                    <% String user = "user";
+                         if (session.getAttribute("user") != null) {  
+                        User user1 = (User)session.getAttribute("user");
+                        user = user1.getName();
+                        }%>
+                    <p class="nopadding">Hello, <%= user %></p>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdownMenuLink" id="navbar-icon-user"
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="material-icons hover-animation-grow">person</i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                                <!-- cái này th?ng nào làm jsp thì phân lo?i theo ki?u ng??i dùng -->
+                                <% if (session.getAttribute("user") == null) {  %>
+                                <li><a class="dropdown-item" href="login.jsp">Login</a></li>
+                                <li><a class="dropdown-item" href="login.jsp">Sign up</a></li>
+                                    <%} else{ %>
+                                <li><a class="dropdown-item" href="UserLogout">Log out</a></li>
+                                <li><a class="dropdown-item" href="userInfo.jsp">Profile</a></li>
+                                    <%}%>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
 
         <!-- spacer for fixed navbar -->
         <div style="height: 84px;" class="spacer"></div>
-
         <!-- Hotest News -->
         <!-- 2 row: 1st be full row; 2nd be 3 smaller one -->
         <div class="hotest-news">
@@ -70,32 +99,33 @@
                             ArrayList<String> user_nameList = (ArrayList<String>) request.getAttribute("user_namelist");
                         %>
                         <div class="col-md-8 featured-card-image nopadding">
-                            <img class="card-img" src="image/news/New Zealand Grapples.webp" alt="...">
+                            <img class="card-img" src="<%= request.getAttribute("location") %><%= news_list.get(0).getImage() %>.jpg" alt="...">
                         </div>
                         <div class="col-md-4 featured-card-content align-self-center nopadding">
                             <div class="card-body">
                                 <h5 class="card-subtitle"><%= cat_nameList.get(0)%></h5><!-- first news -->
                                 <h3 class="card-title"><%= news_list.get(0).getTitle()%></h3>
                                 <p class="card-text"><%= news_list.get(0).getSubtitle()%></p>
-                                <h6 class="card-text"><%= user_nameList.get(0) %></h6>
+                                <h6 class="card-text"><%= user_nameList.get(0)%></h6>
                             </div>
                         </div>
                     </div>
-                <a style="position: absolute; width: 100%; height: 100%;" href="newsInfo.jsp"></a>
+                    <a style="position: absolute; width: 100%; height: 100%;" href="newsInfo.jsp"></a>
                 </div>
                 <div class="row card-group nopadding">
                     <%
                         for (int idx = 0; idx < 4; idx++) { //display 4 top
                     %>
                     <div class="card">
-                        <img src="image/news/New Zealand Grapples.webp" class="card-img-top" alt="...">
+                        <img src="<%= request.getAttribute("location") %><%= news_list.get(idx).getImage() %>.webp" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h3 class="card-title"><%= news_list.get(idx).getTitle()%></h3>
                             <p class="card-text"><%= news_list.get(idx).getSubtitle()%></p>
-                            <h6 class="card-text"><%= user_nameList.get(idx) %></h6>
+                            <h6 class="card-text"><%= user_nameList.get(idx)%></h6>
                         </div>
                     </div>
                     <%}%>
+                    <a style="position: absolute; width: 100%; height: 100%;" href="newsInfo.jsp"></a>
                 </div>
             </div>
         </div>
@@ -106,23 +136,24 @@
             <h1>LATEST</h1>
         </div>
 
+
         <div class="latest-news">
             <div class="container-fluid">
                 <%
-                    for (int idx = news_list.size()-1; idx >= 0; idx--) {
+                    for (int idx = news_list.size() - 1; idx >= 0; idx--) {
                 %>
                 <div class="row card nopadding">
                     <div class="col-md-8 latest-news-body nopadding">
                         <div class="row nopadding">
                             <div class="col-md-6 card-image nopadding">
-                                <img class="card-img" src="image/news/New Zealand Grapples.webp" alt="...">
+                                <img class="card-img" src="<%= request.getAttribute("location") %><%= news_list.get(idx).getImage() %>.webp" alt="...">
                             </div>
                             <div class="col-md-6 card-content align-self-center nopadding">
                                 <div class="card-body">
-                                    <h5 class="card-subtitle"><%= cat_nameList.get(idx) %></h5>
-                                    <h3 class="card-title"><%= news_list.get(idx).getTitle() %></h3>
-                                    <p class="card-text"><%= news_list.get(idx).getTitle() %></p>
-                                    <h6 class="card-text"><%= user_nameList.get(idx) %></h6>
+                                    <h5 class="card-subtitle"><%= cat_nameList.get(idx)%></h5>
+                                    <h3 class="card-title"><%= news_list.get(idx).getTitle()%></h3>
+                                    <p class="card-text"><%= news_list.get(idx).getSubtitle()%></p>
+                                    <h6 class="card-text"><%= user_nameList.get(idx)%></h6>
                                 </div>
                             </div>
                         </div>
